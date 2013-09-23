@@ -119,7 +119,6 @@ setup(int pid)
         hw.freq = 1;
         hw.sample_type = PERF_SAMPLE_IP | PERF_SAMPLE_TID;
         hw.disabled = 1;
-        hw.freq = 1;
         hw.mmap = 1;
         ep->fd = perf_event_open(&hw, -1, cpu, -1, 0);
         if (ep->fd == -1)
@@ -199,7 +198,7 @@ kernel_module()
     assert(modbase != 0);
     uint64_t kend = modbase + len;
     fclose(fp);
-    printf("Kernel: start 0x%lx end 0x%lx\n", kstart, kend);
+    //printf("Kernel: start 0x%lx end 0x%lx\n", kstart, kend);
     kernelMod.name = "vmlinux";
     kernelMod.type = modKernel;
     kernelMod.base = kstart;
@@ -231,7 +230,12 @@ thrstart(void *arg)
     fds.fd = events[mycpu].fd;
     fds.revents = 0;
     fds.events = POLLIN;
-    ioctl(events[mycpu].fd, PERF_EVENT_IOC_ENABLE, 0);
+    int ret = ioctl(events[mycpu].fd, PERF_EVENT_IOC_RESET, 0);
+    if (ret) 
+        err(1, "ioctl reset");
+    ret = ioctl(events[mycpu].fd, PERF_EVENT_IOC_ENABLE, 0);
+    if (ret) 
+        err(1, "ioctl enable");
     for (;;)
     {
         poll(&fds, 1, 50);
@@ -421,7 +425,12 @@ monitor(int pid, struct timeval *jointime)
     double interval;
 
     pthread_barrier_wait(&barrier);
-    ioctl(events[0].fd, PERF_EVENT_IOC_ENABLE, 0);
+    int ret = ioctl(events[0].fd, PERF_EVENT_IOC_RESET, 0);
+    if (ret) 
+        err(1, "ioctl reset");
+    ret = ioctl(events[0].fd, PERF_EVENT_IOC_ENABLE, 0);
+    if (ret) 
+        err(1, "ioctl enable");
     fds.fd = events[0].fd;
     fds.revents = 0;
     fds.events = POLLIN;

@@ -1,6 +1,5 @@
 #!/bin/sh
 SCRIPTPATH=$( cd $(dirname $0); pwd -P)
-echo $SCRIPTPATH
 # save LD_LIBRARY_PATH because setuid binary destroys it and app needs it
 export _TMP_INTEL_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
 exec $SCRIPTPATH/overhead.bin $*

@@ -1,0 +1,3 @@
+OMP_NUM_THREADS=2 \
+I_MPI_PIN_DOMAIN=2 \
+mpiexec.hydra -np 16 ./synthetic-intel64

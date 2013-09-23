@@ -1,0 +1,4 @@
+OMP_NUM_THREADS=4 \
+I_MPI_PIN_DOMAIN=4 \
+I_MPI_MIC=1 \
+mpiexec.hydra -np 60 ./synthetic-mic

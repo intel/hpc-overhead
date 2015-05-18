@@ -27,7 +27,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 #include <sys/resource.h>
 #include <sys/mman.h>
 #include <poll.h>
-#include <assert.h>`
+#include <assert.h>
 #include <immintrin.h>
 #include <map>
 #include <string>
@@ -164,6 +164,7 @@ jointhreads()
 static void
 kernel_module()
 {
+#if 0
     /* get an approximation of the range of addresses occupied by the kernel
      * It would probably be fine just mark anything above 0xFF... as being in
      * the kernel,but we'll
@@ -207,6 +208,12 @@ kernel_module()
 bail:
     if (name) free(name);
     fclose(fp);
+#else
+    kernelMod.name = "vmlinux";
+    kernelMod.type = modKernel;
+    kernelMod.base = 0xffffffff00000000L;
+    kernelMod.size = 0xffffffff;
+#endif
     return;
 }
 
